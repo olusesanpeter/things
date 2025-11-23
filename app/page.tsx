@@ -4,14 +4,28 @@ import { useState, useMemo, useEffect } from "react";
 import { Thing, ThingStatus } from "@/lib/types";
 import ThingsGrid from "./components/ThingsGrid";
 
+// Helper to get the correct API path based on current location
+function getApiPath(path: string) {
+  // If we're on a /things path (proxied), use /things prefix
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/things")) {
+    return `/things${path}`;
+  }
+  return path;
+}
+
 export default function Home() {
   const [selectedStatus, setSelectedStatus] = useState<ThingStatus | "all">("all");
   const [things, setThings] = useState<Thing[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/things")
-      .then((res) => res.json())
+    fetch(getApiPath("/api/things"))
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         setThings(data);
         setLoading(false);

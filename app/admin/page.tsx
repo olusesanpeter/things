@@ -33,6 +33,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
+// Helper to get the correct API path based on current location
+function getApiPath(path: string) {
+  // If we're on a /things path (proxied), use /things prefix
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/things")) {
+    return `/things${path}`
+  }
+  return path
+}
+
 export default function AdminPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -64,7 +73,7 @@ export default function AdminPage() {
 
   const fetchThings = async () => {
     try {
-      const res = await fetch("/api/things")
+      const res = await fetch(getApiPath("/api/things"))
       if (res.ok) {
         const data = await res.json()
         setThings(data)
@@ -107,7 +116,7 @@ export default function AdminPage() {
       const uploadFormData = new FormData()
       uploadFormData.append("file", formData.image)
 
-      const uploadRes = await fetch("/api/upload", {
+      const uploadRes = await fetch(getApiPath("/api/upload"), {
         method: "POST",
         body: uploadFormData
       })
@@ -120,7 +129,7 @@ export default function AdminPage() {
       const { url } = await uploadRes.json()
 
       // Create thing
-      const thingRes = await fetch("/api/things", {
+      const thingRes = await fetch(getApiPath("/api/things"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -159,7 +168,7 @@ export default function AdminPage() {
     if (!thingToDelete) return
 
     try {
-      const res = await fetch(`/api/things?id=${thingToDelete}`, {
+      const res = await fetch(`${getApiPath("/api/things")}?id=${thingToDelete}`, {
         method: "DELETE"
       })
 

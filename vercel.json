@@ -1,9 +1,2 @@
-{
-  "rewrites": [
-    {
-      "source": "/things(/.*)?",
-      "destination": "/"
-    }
-  ]
-}
+{}
 
