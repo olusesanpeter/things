@@ -53,7 +53,9 @@ export default function Home() {
           >
             Things
           </button>{" "}
-          <span className="text-black/30">I</span>{" "}
+          <span className={selectedStatus === "all" ? "text-black/30" : "text-black"}>
+            I
+          </span>{" "}
           <button
             onClick={() => handleStatusClick("like")}
             className={`underline decoration-solid underline-offset-4 ${
@@ -66,7 +68,7 @@ export default function Home() {
           >
             like
           </button>
-          {", "}
+          <span className="text-black/30">, </span>
           <button
             onClick={() => handleStatusClick("have")}
             className={`underline decoration-solid underline-offset-4 ${
@@ -79,7 +81,7 @@ export default function Home() {
           >
             have
           </button>
-          {", "}
+          <span className="text-black/30">, </span>
           <button
             onClick={() => handleStatusClick("want")}
             className={`underline decoration-solid underline-offset-4 ${
