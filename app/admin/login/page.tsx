@@ -3,6 +3,11 @@
 import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function LoginPage() {
   const [password, setPassword] = useState("")
@@ -36,31 +41,37 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
-      <form onSubmit={handleSubmit} className="max-w-md w-full space-y-4">
-        <h1 className="text-[40px] font-medium leading-normal text-black tracking-[-2px] mb-8">
-          Admin Login
-        </h1>
-        <div>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full border border-black/20 p-3 text-black focus:outline-none focus:border-black"
-            required
-            disabled={loading}
-          />
-        </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-black text-white px-6 py-3 w-full disabled:opacity-50 transition-opacity"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-[40px] font-medium leading-normal text-black tracking-[-2px]">
+            Managing your things
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                required
+                disabled={loading}
+              />
+            </div>
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "Logging in..." : "Login"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }
-
