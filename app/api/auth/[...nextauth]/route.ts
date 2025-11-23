@@ -55,8 +55,11 @@ export const authOptions = {
 }
 
 const auth = NextAuth(authOptions)
-const { handlers } = auth
+const { handlers, auth: getSession } = auth
 
 export const GET = handlers.GET
 export const POST = handlers.POST
+
+// Export the auth function for use in API routes
+export { getSession as auth }
 
