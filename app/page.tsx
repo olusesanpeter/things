@@ -33,11 +33,27 @@ export default function Home() {
     setSelectedStatus(status === selectedStatus ? "all" : status);
   };
 
+  const handleThingsClick = () => {
+    setSelectedStatus("all");
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <main className="max-w-[1440px] mx-auto px-7 sm:px-7 pt-[34px] pb-16">
         <h1 className="text-[40px] sm:text-[40px] font-medium leading-normal text-black tracking-[-2px] mb-[38px]">
-          Things I{" "}
+          <button
+            onClick={handleThingsClick}
+            className={`underline decoration-solid underline-offset-4 ${
+              selectedStatus === "all"
+                ? "text-black"
+                : "text-black/30 hover:text-black"
+            } transition-colors focus:outline-none`}
+            aria-pressed={selectedStatus === "all"}
+            aria-label="Show all things"
+          >
+            Things
+          </button>{" "}
+          I{" "}
           <button
             onClick={() => handleStatusClick("like")}
             className={`underline decoration-solid underline-offset-4 ${
