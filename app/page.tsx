@@ -76,7 +76,6 @@ export default function Home() {
           >
             want
           </button>
-          .
         </h1>
 
         {loading ? (
