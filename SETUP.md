@@ -20,17 +20,16 @@ npm install
 
 ### 2. Configure Vercel Services
 
-#### Upstash Redis (Database) - via Marketplace
+#### Redis (Database) - via Marketplace
 1. Go to your Vercel project dashboard
 2. Navigate to **Storage** → **Browse Storage**
-3. In the Marketplace Database Providers section, click on **Upstash** (or **Redis**)
+3. In the Marketplace Database Providers section, click on **Redis** (or **Upstash**)
 4. Click **Continue** and follow the setup wizard
-5. This will automatically add environment variables:
-   - `KV_REST_API_URL`
-   - `KV_REST_API_TOKEN`
-   - `KV_REST_API_READ_ONLY_TOKEN`
+5. Click **Connect Project** to link it to your Vercel project
+6. This will automatically add the environment variable:
+   - `REDIS_URL` (connection string for Redis)
 
-**Note:** `@vercel/kv` is compatible with Upstash Redis, so no code changes are needed!
+**Note:** The code uses the `redis` package which works with any Redis provider via `REDIS_URL`.
 
 #### Vercel Blob Storage (Images)
 1. In your Vercel project dashboard
@@ -95,8 +94,8 @@ Required variables:
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL` (your production URL)
 - `ADMIN_PASSWORD`
-- Upstash Redis variables (automatically added when you create the database via Marketplace)
-- Blob Storage variables (automatically added when you create the Blob store)
+- `REDIS_URL` (automatically added when you connect Redis via Marketplace)
+- `BLOB_READ_WRITE_TOKEN` (automatically added when you create the Blob store)
 
 ### Deploy
 
@@ -146,8 +145,9 @@ git push
 - Verify `ADMIN_PASSWORD` is correct
 
 ### Things not saving
-- Verify Upstash Redis database is created via Marketplace and connected
-- Check KV environment variables are set (`KV_REST_API_URL`, `KV_REST_API_TOKEN`)
+- Verify Redis database is created via Marketplace and connected to your project
+- Check that `REDIS_URL` environment variable is set
 - Look at Vercel function logs for errors
-- Ensure you selected Upstash Redis (not Postgres) in the Marketplace
+- Ensure you selected Redis (not Postgres) in the Marketplace
+- Make sure you clicked "Connect Project" after creating the Redis database
 

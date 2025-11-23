@@ -1,23 +1,23 @@
-import { kv } from "@vercel/kv"
+import { get, set } from "@/lib/redis"
 import { Thing } from "@/lib/types"
 import { things as seedThings } from "@/lib/things"
 
 const THINGS_KEY = "things"
 
-// One-time seed route to migrate existing things to KV
+// One-time seed route to migrate existing things to Redis
 // Call this once: POST /api/seed
 export async function POST() {
   try {
-    const existing = await kv.get<Thing[]>(THINGS_KEY)
+    const existing = await get<Thing[]>(THINGS_KEY)
     
     if (existing && existing.length > 0) {
       return Response.json({ 
-        message: "Things already exist in KV. Skipping seed.",
+        message: "Things already exist in Redis. Skipping seed.",
         count: existing.length 
       })
     }
 
-    await kv.set(THINGS_KEY, seedThings)
+    await set(THINGS_KEY, seedThings)
     
     return Response.json({ 
       message: "Successfully seeded things",

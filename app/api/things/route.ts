@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth"
-import { kv } from "@vercel/kv"
+import { get, set } from "@/lib/redis"
 import { NextRequest, NextResponse } from "next/server"
 import { Thing, ThingStatus } from "@/lib/types"
 
@@ -8,7 +8,7 @@ const THINGS_KEY = "things"
 // GET - Fetch all things
 export async function GET() {
   try {
-    const things = await kv.get<Thing[]>(THINGS_KEY)
+    const things = await get<Thing[]>(THINGS_KEY)
     return NextResponse.json(things || [])
   } catch (error) {
     console.error("Error fetching things:", error)
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
-    const things = (await kv.get<Thing[]>(THINGS_KEY)) || []
+    const things = (await get<Thing[]>(THINGS_KEY)) || []
     const newThing: Thing = {
       id: Date.now().toString(),
       title: title.trim(),
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     }
 
     things.push(newThing)
-    await kv.set(THINGS_KEY, things)
+    await set(THINGS_KEY, things)
 
     return NextResponse.json(newThing, { status: 201 })
   } catch (error) {
@@ -74,9 +74,9 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Missing id parameter" }, { status: 400 })
     }
 
-    const things = (await kv.get<Thing[]>(THINGS_KEY)) || []
+    const things = (await get<Thing[]>(THINGS_KEY)) || []
     const filtered = things.filter(t => t.id !== id)
-    await kv.set(THINGS_KEY, filtered)
+    await set(THINGS_KEY, filtered)
 
     return NextResponse.json({ success: true })
   } catch (error) {
