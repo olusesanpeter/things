@@ -53,7 +53,7 @@ export default function Home() {
           >
             Things
           </button>{" "}
-          I{" "}
+          <span className="text-black/30">I</span>{" "}
           <button
             onClick={() => handleStatusClick("like")}
             className={`underline decoration-solid underline-offset-4 ${
