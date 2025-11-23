@@ -5,7 +5,7 @@ This guide will help you set up the lightweight CMS for managing things.
 ## Prerequisites
 
 1. A Vercel account
-2. Vercel KV database (free tier available)
+2. Upstash Redis database (via Vercel Marketplace - free tier available)
 3. Vercel Blob Storage (free tier available)
 
 ## Setup Steps
@@ -20,18 +20,24 @@ npm install
 
 ### 2. Configure Vercel Services
 
-#### Vercel KV (Database)
+#### Upstash Redis (Database) - via Marketplace
 1. Go to your Vercel project dashboard
-2. Navigate to Storage → Create Database → KV
-3. This will automatically add environment variables:
+2. Navigate to **Storage** → **Browse Storage**
+3. In the Marketplace Database Providers section, click on **Upstash** (or **Redis**)
+4. Click **Continue** and follow the setup wizard
+5. This will automatically add environment variables:
    - `KV_REST_API_URL`
    - `KV_REST_API_TOKEN`
    - `KV_REST_API_READ_ONLY_TOKEN`
 
+**Note:** `@vercel/kv` is compatible with Upstash Redis, so no code changes are needed!
+
 #### Vercel Blob Storage (Images)
 1. In your Vercel project dashboard
-2. Navigate to Storage → Create Blob Store
-3. This will automatically add:
+2. Navigate to **Storage** → **Browse Storage**
+3. Click on **Blob** (Fast object storage)
+4. Click **Continue** and follow the setup wizard
+5. This will automatically add:
    - `BLOB_READ_WRITE_TOKEN`
 
 ### 3. Set Environment Variables
@@ -89,7 +95,8 @@ Required variables:
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL` (your production URL)
 - `ADMIN_PASSWORD`
-- KV and Blob Storage variables (automatically added when you create the stores)
+- Upstash Redis variables (automatically added when you create the database via Marketplace)
+- Blob Storage variables (automatically added when you create the Blob store)
 
 ### Deploy
 
@@ -139,7 +146,8 @@ git push
 - Verify `ADMIN_PASSWORD` is correct
 
 ### Things not saving
-- Verify KV database is created and connected
-- Check KV environment variables are set
+- Verify Upstash Redis database is created via Marketplace and connected
+- Check KV environment variables are set (`KV_REST_API_URL`, `KV_REST_API_TOKEN`)
 - Look at Vercel function logs for errors
+- Ensure you selected Upstash Redis (not Postgres) in the Marketplace
 
