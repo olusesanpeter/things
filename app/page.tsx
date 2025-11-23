@@ -1,64 +1,89 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useMemo, useEffect } from "react";
+import { Thing, ThingStatus } from "@/lib/types";
+import ThingsGrid from "./components/ThingsGrid";
 
 export default function Home() {
+  const [selectedStatus, setSelectedStatus] = useState<ThingStatus | "all">("all");
+  const [things, setThings] = useState<Thing[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/things")
+      .then((res) => res.json())
+      .then((data) => {
+        setThings(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching things:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const filteredThings = useMemo(() => {
+    if (selectedStatus === "all") {
+      return things;
+    }
+    return things.filter((thing) => thing.status === selectedStatus);
+  }, [selectedStatus, things]);
+
+  const handleStatusClick = (status: ThingStatus) => {
+    setSelectedStatus(status === selectedStatus ? "all" : status);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-white">
+      <main className="max-w-[1440px] mx-auto px-7 sm:px-7 pt-[34px] pb-16">
+        <h1 className="text-[40px] sm:text-[40px] font-medium leading-normal text-black tracking-[-2px] mb-[38px]">
+          Things I{" "}
+          <button
+            onClick={() => handleStatusClick("like")}
+            className={`underline decoration-solid underline-offset-4 ${
+              selectedStatus === "like"
+                ? "text-black"
+                : "text-black/30 hover:text-black"
+            } transition-colors focus:outline-none`}
+            aria-pressed={selectedStatus === "like"}
+            aria-label="Filter by like"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            like
+          </button>
+          {", "}
+          <button
+            onClick={() => handleStatusClick("have")}
+            className={`underline decoration-solid underline-offset-4 ${
+              selectedStatus === "have"
+                ? "text-black"
+                : "text-black/30 hover:text-black"
+            } transition-colors focus:outline-none`}
+            aria-pressed={selectedStatus === "have"}
+            aria-label="Filter by have"
           >
-            Documentation
-          </a>
-        </div>
+            have
+          </button>
+          {", "}
+          <button
+            onClick={() => handleStatusClick("want")}
+            className={`underline decoration-solid underline-offset-4 ${
+              selectedStatus === "want"
+                ? "text-black"
+                : "text-black/30 hover:text-black"
+            } transition-colors focus:outline-none`}
+            aria-pressed={selectedStatus === "want"}
+            aria-label="Filter by want"
+          >
+            want
+          </button>
+          .
+        </h1>
+
+        {loading ? (
+          <div className="text-center py-12 text-black/60">Loading...</div>
+        ) : (
+          <ThingsGrid things={filteredThings} />
+        )}
       </main>
     </div>
   );
