@@ -10,7 +10,10 @@ export const authOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (credentials?.password === process.env.ADMIN_PASSWORD) {
+        const providedPassword = credentials?.password as string | undefined
+        const expectedPassword = process.env.ADMIN_PASSWORD
+        
+        if (providedPassword === expectedPassword) {
           return { id: "1", name: "Admin" }
         }
         return null
